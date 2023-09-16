@@ -52,5 +52,30 @@ namespace CursoNET7API.Controllers
             return Ok(regionDto);
         }
 
+
+        [HttpPost]
+        public IActionResult Create([FromBody] AddRegionRequestDto regionDto) 
+        {
+            var regionModel = new Region
+            {
+                Code = regionDto.Code,
+                Name = regionDto.Name,
+                RegionImageUrl = regionDto.RegionImageUrl,
+            };
+
+            dbContext.Regions.Add(regionModel);
+            dbContext.SaveChanges();
+
+            var regionDtoReturn = new RegionDto
+            {
+                Id = regionModel.Id,
+                Code = regionModel.Code,
+                Name = regionModel.Name,
+                RegionImageUrl = regionModel.RegionImageUrl,
+            };
+
+            return CreatedAtAction(nameof(GetById), new {id = regionDtoReturn.Id}, regionDtoReturn);
+        }
+
     }
 }
