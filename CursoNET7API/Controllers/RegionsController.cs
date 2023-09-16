@@ -103,5 +103,27 @@ namespace CursoNET7API.Controllers
 
         }
 
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            var regionModel = dbContext.Regions.Find(id);
+
+            if (regionModel == null) { return NotFound(); }
+
+            dbContext.Regions.Remove(regionModel);
+            dbContext.SaveChanges();
+
+            var regionDto = new RegionDto
+            {
+                Id = regionModel.Id,
+                Code = regionModel.Code,
+                Name = regionModel.Name,
+                RegionImageUrl = regionModel.RegionImageUrl,
+            };
+
+            return Ok(regionDto);
+        }
+
     }
 }
