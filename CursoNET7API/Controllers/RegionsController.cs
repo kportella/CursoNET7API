@@ -1,5 +1,6 @@
 ﻿using CursoNET7API.Data;
 using CursoNET7API.Models.Domain;
+using CursoNET7API.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,10 +20,21 @@ namespace CursoNET7API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-
             var regions = dbContext.Regions.ToList();
 
-            return Ok(regions);
+            var regionsDto = new List<RegionDto>();
+            foreach (var region in regions)
+            {
+                regionsDto.Add(new RegionDto()
+                {
+                    Id = region.Id,
+                    Name = region.Name,
+                    Code = region.Code,
+                    RegionImageUrl = region.RegionImageUrl
+                });
+            }
+
+            return Ok(regionsDto);
         }
 
         [HttpGet]
@@ -34,7 +46,10 @@ namespace CursoNET7API.Controllers
             //var region = dbContext.Regions.FirstOrDefault(x => x.Id == id);
 
             if (region == null) { return NotFound(); }
-            return Ok(region);
+
+            var regionDto = new RegionDto() { Id = region.Id, Code = region.Code, Name = region.Name, RegionImageUrl = region.RegionImageUrl };
+
+            return Ok(regionDto);
         }
 
     }
