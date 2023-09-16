@@ -1,4 +1,5 @@
-﻿using CursoNET7API.Models.Domain;
+﻿using CursoNET7API.Data;
+using CursoNET7API.Models.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,26 +9,19 @@ namespace CursoNET7API.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
-        public RegionsController() { }
+        private readonly NZWalksDbContext dbContext;
+
+        public RegionsController(NZWalksDbContext dbContext) 
+        {
+            this.dbContext = dbContext;
+        }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var regions = new List<Region>
-            {
-                new Region
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Auckland Region",
-                    Code = "AKL",
-                },
-                new Region
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Wellington Region",
-                    Code = "WLG",
-                },
-            };
+
+            var regions = dbContext.Regions.ToList();
+
             return Ok(regions);
         }
 
