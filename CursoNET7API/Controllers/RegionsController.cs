@@ -77,5 +77,31 @@ namespace CursoNET7API.Controllers
             return CreatedAtAction(nameof(GetById), new {id = regionDtoReturn.Id}, regionDtoReturn);
         }
 
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+        {
+            var regionModel = dbContext.Regions.Find(id);
+
+            if (regionModel == null) { return NotFound(); }
+
+            regionModel.Code = updateRegionRequestDto.Code;
+            regionModel.Name = updateRegionRequestDto.Name;
+            regionModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
+
+            dbContext.SaveChanges();
+
+            var regionDto = new RegionDto
+            {
+                Id = regionModel.Id,
+                Code = regionModel.Code,
+                Name = regionModel.Name,
+                RegionImageUrl = regionModel.RegionImageUrl,
+            };
+
+            return Ok(regionDto);
+
+        }
+
     }
 }
