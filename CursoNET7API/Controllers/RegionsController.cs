@@ -45,7 +45,7 @@ namespace CursoNET7API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) 
         {
-            var region = await dbContext.Regions.FindAsync(id);
+            var region = await regionRepository.GetByIdAsync(id);
 
             //var region = dbContext.Regions.FirstOrDefault(x => x.Id == id);
 
@@ -67,8 +67,7 @@ namespace CursoNET7API.Controllers
                 RegionImageUrl = regionDto.RegionImageUrl,
             };
 
-            await dbContext.Regions.AddAsync(regionModel);
-            await dbContext.SaveChangesAsync();
+            await regionRepository.CreateAsync(regionModel);
 
             var regionDtoReturn = new RegionDto
             {
@@ -85,15 +84,16 @@ namespace CursoNET7API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            var regionModel = await dbContext.Regions.FindAsync(id);
-
+            var regionModel = new Region
+            {
+                Code = updateRegionRequestDto.Code,
+                Name = updateRegionRequestDto.Name,
+                RegionImageUrl = updateRegionRequestDto.RegionImageUrl
+            };
+            
+            regionModel = await regionRepository.UpdateAsync(id, regionModel);
+            
             if (regionModel == null) { return NotFound(); }
-
-            regionModel.Code = updateRegionRequestDto.Code;
-            regionModel.Name = updateRegionRequestDto.Name;
-            regionModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
-
-            await dbContext.SaveChangesAsync();
 
             var regionDto = new RegionDto
             {
@@ -111,7 +111,7 @@ namespace CursoNET7API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var regionModel = await dbContext.Regions.FindAsync(id);
+            var regionModel = await regionRepository.DeleteAsync(id);
 
             if (regionModel == null) { return NotFound(); }
 
