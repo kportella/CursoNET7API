@@ -3,6 +3,7 @@ using CursoNET7API.Models.Domain;
 using CursoNET7API.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CursoNET7API.Controllers
 {
@@ -18,9 +19,9 @@ namespace CursoNET7API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var regions = dbContext.Regions.ToList();
+            var regions = await dbContext.Regions.ToListAsync();
 
             var regionsDto = new List<RegionDto>();
             foreach (var region in regions)
@@ -39,9 +40,9 @@ namespace CursoNET7API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
-        public IActionResult GetById([FromRoute] Guid id) 
+        public async Task<IActionResult> GetById([FromRoute] Guid id) 
         {
-            var region = dbContext.Regions.Find(id);
+            var region = await dbContext.Regions.FindAsync(id);
 
             //var region = dbContext.Regions.FirstOrDefault(x => x.Id == id);
 
@@ -54,7 +55,7 @@ namespace CursoNET7API.Controllers
 
 
         [HttpPost]
-        public IActionResult Create([FromBody] AddRegionRequestDto regionDto) 
+        public async Task<IActionResult> Create([FromBody] AddRegionRequestDto regionDto) 
         {
             var regionModel = new Region
             {
@@ -63,8 +64,8 @@ namespace CursoNET7API.Controllers
                 RegionImageUrl = regionDto.RegionImageUrl,
             };
 
-            dbContext.Regions.Add(regionModel);
-            dbContext.SaveChanges();
+            await dbContext.Regions.AddAsync(regionModel);
+            await dbContext.SaveChangesAsync();
 
             var regionDtoReturn = new RegionDto
             {
@@ -79,9 +80,9 @@ namespace CursoNET7API.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            var regionModel = dbContext.Regions.Find(id);
+            var regionModel = await dbContext.Regions.FindAsync(id);
 
             if (regionModel == null) { return NotFound(); }
 
@@ -89,7 +90,7 @@ namespace CursoNET7API.Controllers
             regionModel.Name = updateRegionRequestDto.Name;
             regionModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
 
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             var regionDto = new RegionDto
             {
@@ -105,14 +106,14 @@ namespace CursoNET7API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var regionModel = dbContext.Regions.Find(id);
+            var regionModel = await dbContext.Regions.FindAsync(id);
 
             if (regionModel == null) { return NotFound(); }
 
             dbContext.Regions.Remove(regionModel);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             var regionDto = new RegionDto
             {
