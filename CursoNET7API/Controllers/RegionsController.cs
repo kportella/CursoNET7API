@@ -1,6 +1,7 @@
 ﻿using CursoNET7API.Data;
 using CursoNET7API.Models.Domain;
 using CursoNET7API.Models.DTO;
+using CursoNET7API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,16 +13,18 @@ namespace CursoNET7API.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDbContext dbContext;
+        private readonly IRegionRepository regionRepository;
 
-        public RegionsController(NZWalksDbContext dbContext) 
+        public RegionsController(NZWalksDbContext dbContext, IRegionRepository regionRepository) 
         {
             this.dbContext = dbContext;
+            this.regionRepository = regionRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var regions = await dbContext.Regions.ToListAsync();
+            var regions = await regionRepository.GetAllAsync();
 
             var regionsDto = new List<RegionDto>();
             foreach (var region in regions)
