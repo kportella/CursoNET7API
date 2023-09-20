@@ -32,5 +32,22 @@ namespace CursoNET7API.Repositories
         {
             return await dbcontext.Walks.Include("Difficulty").Include("Region").FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<Walk?> UpdateAsync(Guid id, Walk walk)
+        {
+            var existingWalk = await dbcontext.Walks.FindAsync(id);
+            if (existingWalk == null) { return null }
+
+            existingWalk.Name = walk.Name;
+            existingWalk.DifficultyId = walk.DifficultyId;
+            existingWalk.Description = walk.Description;
+            existingWalk.RegionId = walk.RegionId;
+            existingWalk.LengthInKm = walk.LengthInKm;
+            existingWalk.WalkImageUrl = walk.WalkImageUrl;
+
+            await dbcontext.SaveChangesAsync();
+
+            return existingWalk;
+        }
     }
 }

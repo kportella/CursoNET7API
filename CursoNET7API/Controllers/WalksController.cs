@@ -43,5 +43,14 @@ namespace CursoNET7API.Controllers
             if (walkModel == null) return NotFound();
             return Ok(mapper.Map<WalkDto>(walkModel));
         }
+
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkDto)
+        {
+            var walkModel = await walkRepository.UpdateAsync(id, mapper.Map<Walk>(updateWalkDto));
+            if (walkModel == null) return NotFound();
+            return Ok(mapper.Map<WalkDto>(walkModel));    
+        }
     }
 }

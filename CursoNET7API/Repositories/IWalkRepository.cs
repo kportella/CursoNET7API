@@ -7,5 +7,6 @@ namespace CursoNET7API.Repositories
         Task<Walk> CreateAsync(Walk walk);
         Task<IEnumerable<Walk>> GetAllAsync();
         Task<Walk?> GetByIdAsync(Guid id);
+        Task<Walk?> UpdateAsync(Guid id, Walk walk);
     }
 }
