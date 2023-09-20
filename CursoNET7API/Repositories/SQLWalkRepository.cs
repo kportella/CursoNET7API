@@ -25,7 +25,7 @@ namespace CursoNET7API.Repositories
 
         public async Task<IEnumerable<Walk>> GetAllAsync()
         {
-            return await dbcontext.Walks.ToListAsync();
+            return await dbcontext.Walks.Include("Difficulty").Include("Region").ToListAsync();
         }
     }
 }
