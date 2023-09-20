@@ -34,5 +34,14 @@ namespace CursoNET7API.Controllers
         {
             return Ok(mapper.Map<List<WalkDto>>(await walkRepository.GetAllAsync()));
         }
+
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> GetById([FromRoute]Guid id)
+        {
+            var walkModel = await walkRepository.GetByIdAsync(id);
+            if (walkModel == null) return NotFound();
+            return Ok(mapper.Map<WalkDto>(walkModel));
+        }
     }
 }
