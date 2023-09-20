@@ -30,11 +30,26 @@ namespace CursoNET7API.Repositories
             if (existingWalk == null) { return null; }
             dbcontext.Walks.Remove(existingWalk);
             await dbcontext.SaveChangesAsync();
+
+            return existingWalk;
         }
 
-        public async Task<IEnumerable<Walk>> GetAllAsync()
+        public async Task<IEnumerable<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null)
         {
-            return await dbcontext.Walks.Include("Difficulty").Include("Region").ToListAsync();
+            var walks = dbcontext.Walks.Include("Difficulty").Include("Region").AsQueryable();
+
+            if (!(string.IsNullOrWhiteSpace(filterOn) && string.IsNullOrWhiteSpace(filterQuery)))
+            {
+                if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(x => x.Name.Contains(filterQuery));
+                }
+            }
+
+            return await walks.ToListAsync();
+
+
+            // return await dbcontext.Walks.Include("Difficulty").Include("Region").ToListAsync();
         }
 
         public async Task<Walk?> GetByIdAsync(Guid id)

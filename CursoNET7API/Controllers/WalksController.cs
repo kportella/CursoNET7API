@@ -3,7 +3,6 @@ using CursoNET7API.CustomActionFilters;
 using CursoNET7API.Models.Domain;
 using CursoNET7API.Models.DTO;
 using CursoNET7API.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CursoNET7API.Controllers
@@ -31,9 +30,10 @@ namespace CursoNET7API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
         {
-            return Ok(mapper.Map<List<WalkDto>>(await walkRepository.GetAllAsync()));
+
+            return Ok(mapper.Map<List<WalkDto>>(await walkRepository.GetAllAsync(filterOn, filterQuery)));
         }
 
         [HttpGet]
