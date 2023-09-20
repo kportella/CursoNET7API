@@ -1,5 +1,6 @@
 ﻿using CursoNET7API.Data;
 using CursoNET7API.Models.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace CursoNET7API.Repositories
 {
@@ -20,6 +21,11 @@ namespace CursoNET7API.Repositories
             await dbcontext.SaveChangesAsync();
 
             return walk;
+        }
+
+        public async Task<IEnumerable<Walk>> GetAllAsync()
+        {
+            return await dbcontext.Walks.ToListAsync();
         }
     }
 }

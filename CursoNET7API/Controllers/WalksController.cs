@@ -28,5 +28,11 @@ namespace CursoNET7API.Controllers
             return Ok(mapper.Map<WalkDto>(walkModel));
  
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(mapper.Map<List<WalkDto>>(await walkRepository.GetAllAsync()));
+        }
     }
 }
