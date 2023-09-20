@@ -47,24 +47,30 @@ namespace CursoNET7API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
         {
-            var regionModel = await regionRepository.CreateAsync(mapper.Map<Region>(addRegionRequestDto));
+            if (ModelState.IsValid)
+            {
+                var regionModel = await regionRepository.CreateAsync(mapper.Map<Region>(addRegionRequestDto));
 
-            var regionDto = mapper.Map<RegionDto>(regionModel);
+                var regionDto = mapper.Map<RegionDto>(regionModel);
 
-            return CreatedAtAction(nameof(GetById), new {id = regionDto.Id}, regionDto);
+                return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpPut]
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            
-            var regionModel = await regionRepository.UpdateAsync(id, mapper.Map<Region>(updateRegionRequestDto));
-            
-            if (regionModel == null) { return NotFound(); }
+            if (ModelState.IsValid)
+            {
+                var regionModel = await regionRepository.UpdateAsync(id, mapper.Map<Region>(updateRegionRequestDto));
 
-            return Ok(mapper.Map<RegionDto>(regionModel));
+                if (regionModel == null) { return NotFound(); }
 
+                return Ok(mapper.Map<RegionDto>(regionModel));
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpDelete]

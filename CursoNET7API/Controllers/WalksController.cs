@@ -23,10 +23,13 @@ namespace CursoNET7API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddWalkRequestDto addWalkRequestDto)
         {
-            var walkModel = await walkRepository.CreateAsync(mapper.Map<Walk>(addWalkRequestDto));
+            if (ModelState.IsValid)
+            {
+                var walkModel = await walkRepository.CreateAsync(mapper.Map<Walk>(addWalkRequestDto));
 
-            return Ok(mapper.Map<WalkDto>(walkModel));
- 
+                return Ok(mapper.Map<WalkDto>(walkModel));
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpGet]
@@ -48,9 +51,13 @@ namespace CursoNET7API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkDto)
         {
-            var walkModel = await walkRepository.UpdateAsync(id, mapper.Map<Walk>(updateWalkDto));
-            if (walkModel == null) return NotFound();
-            return Ok(mapper.Map<WalkDto>(walkModel));    
+            if (ModelState.IsValid)
+            {
+                var walkModel = await walkRepository.UpdateAsync(id, mapper.Map<Walk>(updateWalkDto));
+                if (walkModel == null) return NotFound();
+                return Ok(mapper.Map<WalkDto>(walkModel));
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpDelete]
