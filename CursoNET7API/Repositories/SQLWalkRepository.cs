@@ -23,6 +23,15 @@ namespace CursoNET7API.Repositories
             return walk;
         }
 
+        public async Task<Walk?> DeleteAsync(Guid id)
+        {
+            var existingWalk = await dbcontext.Walks.FindAsync(id);
+
+            if (existingWalk == null) { return null; }
+            dbcontext.Walks.Remove(existingWalk);
+            await dbcontext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Walk>> GetAllAsync()
         {
             return await dbcontext.Walks.Include("Difficulty").Include("Region").ToListAsync();
@@ -36,7 +45,7 @@ namespace CursoNET7API.Repositories
         public async Task<Walk?> UpdateAsync(Guid id, Walk walk)
         {
             var existingWalk = await dbcontext.Walks.FindAsync(id);
-            if (existingWalk == null) { return null }
+            if (existingWalk == null) { return null; }
 
             existingWalk.Name = walk.Name;
             existingWalk.DifficultyId = walk.DifficultyId;

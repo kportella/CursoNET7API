@@ -52,5 +52,15 @@ namespace CursoNET7API.Controllers
             if (walkModel == null) return NotFound();
             return Ok(mapper.Map<WalkDto>(walkModel));    
         }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var walkModel = await walkRepository.DeleteAsync(id);
+
+            if (walkModel == null) return NotFound();
+            return Ok(mapper.Map<WalkDto>(walkModel));
+        }
     }
 }
