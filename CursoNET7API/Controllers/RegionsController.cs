@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CursoNET7API.CustomActionFilters;
 using CursoNET7API.Data;
 using CursoNET7API.Models.Domain;
 using CursoNET7API.Models.DTO;
@@ -45,32 +46,26 @@ namespace CursoNET7API.Controllers
 
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
         {
-            if (ModelState.IsValid)
-            {
-                var regionModel = await regionRepository.CreateAsync(mapper.Map<Region>(addRegionRequestDto));
+            var regionModel = await regionRepository.CreateAsync(mapper.Map<Region>(addRegionRequestDto));
 
-                var regionDto = mapper.Map<RegionDto>(regionModel);
+            var regionDto = mapper.Map<RegionDto>(regionModel);
 
-                return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
-            }
-            return BadRequest(ModelState);
+            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
         }
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            if (ModelState.IsValid)
-            {
-                var regionModel = await regionRepository.UpdateAsync(id, mapper.Map<Region>(updateRegionRequestDto));
+            var regionModel = await regionRepository.UpdateAsync(id, mapper.Map<Region>(updateRegionRequestDto));
 
-                if (regionModel == null) { return NotFound(); }
+            if (regionModel == null) { return NotFound(); }
 
-                return Ok(mapper.Map<RegionDto>(regionModel));
-            }
-            return BadRequest(ModelState);
+            return Ok(mapper.Map<RegionDto>(regionModel));
         }
 
         [HttpDelete]

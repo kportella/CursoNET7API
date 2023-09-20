@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CursoNET7API.CustomActionFilters;
 using CursoNET7API.Models.Domain;
 using CursoNET7API.Models.DTO;
 using CursoNET7API.Repositories;
@@ -21,15 +22,12 @@ namespace CursoNET7API.Controllers
         }
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Create([FromBody] AddWalkRequestDto addWalkRequestDto)
         {
-            if (ModelState.IsValid)
-            {
-                var walkModel = await walkRepository.CreateAsync(mapper.Map<Walk>(addWalkRequestDto));
+           var walkModel = await walkRepository.CreateAsync(mapper.Map<Walk>(addWalkRequestDto));
 
-                return Ok(mapper.Map<WalkDto>(walkModel));
-            }
-            return BadRequest(ModelState);
+           return Ok(mapper.Map<WalkDto>(walkModel));
         }
 
         [HttpGet]
@@ -49,15 +47,12 @@ namespace CursoNET7API.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkDto)
         {
-            if (ModelState.IsValid)
-            {
-                var walkModel = await walkRepository.UpdateAsync(id, mapper.Map<Walk>(updateWalkDto));
-                if (walkModel == null) return NotFound();
-                return Ok(mapper.Map<WalkDto>(walkModel));
-            }
-            return BadRequest(ModelState);
+            var walkModel = await walkRepository.UpdateAsync(id, mapper.Map<Walk>(updateWalkDto));
+            if (walkModel == null) return NotFound();
+            return Ok(mapper.Map<WalkDto>(walkModel));
         }
 
         [HttpDelete]
