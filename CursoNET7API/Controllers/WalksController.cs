@@ -30,10 +30,11 @@ namespace CursoNET7API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+            [FromQuery] string? sortBy, [FromQuery] bool? isAscending)
         {
 
-            return Ok(mapper.Map<List<WalkDto>>(await walkRepository.GetAllAsync(filterOn, filterQuery)));
+            return Ok(mapper.Map<List<WalkDto>>(await walkRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true)));
         }
 
         [HttpGet]
