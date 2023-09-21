@@ -34,7 +34,8 @@ namespace CursoNET7API.Repositories
             return existingWalk;
         }
 
-        public async Task<IEnumerable<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool isAscending = true)
+        public async Task<IEnumerable<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null, 
+            string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 1000)
         {
             var walks = dbcontext.Walks.Include("Difficulty").Include("Region").AsQueryable();
 
@@ -58,7 +59,11 @@ namespace CursoNET7API.Repositories
                 }
             }
 
-            return await walks.ToListAsync();
+            var skipResults = (pageNumber - 1 * pageSize);
+
+
+
+            return await walks.Skip(skipResults).Take(pageSize).ToListAsync();
 
 
             // return await dbcontext.Walks.Include("Difficulty").Include("Region").ToListAsync();
