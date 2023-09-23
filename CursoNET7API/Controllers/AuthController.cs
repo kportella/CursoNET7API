@@ -1,4 +1,5 @@
 ﻿using CursoNET7API.Models.DTO;
+using CursoNET7API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace CursoNET7API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
+        private readonly ITokenRepository tokenRepository;
 
-        public AuthController(UserManager<IdentityUser> userManager)
+        public AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository)
         {
             this.userManager = userManager;
+            this.tokenRepository = tokenRepository;
         }
 
 
@@ -63,7 +66,21 @@ namespace CursoNET7API.Controllers
                 return BadRequest("Username or password incorrect.");
             }
 
-            return Ok();
+            var roles = await userManager.GetRolesAsync(user);
+
+            if (roles == null)
+            {
+                return BadRequest("Username or password incorrect.");
+            }
+
+            var jwtToken = tokenRepository.CreateJWTToken(user, roles);
+
+            var response = new LoginResponseDto
+            {
+                JwtToken = jwtToken
+            };
+
+            return Ok(response);
         }
     }
 }
