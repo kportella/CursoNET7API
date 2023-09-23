@@ -28,6 +28,7 @@ namespace CursoNET7API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll()
         {
             var regions = await regionRepository.GetAllAsync();
@@ -37,6 +38,7 @@ namespace CursoNET7API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) 
         {
             var region = await regionRepository.GetByIdAsync(id);
@@ -49,6 +51,7 @@ namespace CursoNET7API.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
         {
             var regionModel = await regionRepository.CreateAsync(mapper.Map<Region>(addRegionRequestDto));
@@ -61,6 +64,7 @@ namespace CursoNET7API.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
             var regionModel = await regionRepository.UpdateAsync(id, mapper.Map<Region>(updateRegionRequestDto));
@@ -72,6 +76,7 @@ namespace CursoNET7API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer,Reader")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var regionModel = await regionRepository.DeleteAsync(id);
